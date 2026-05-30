@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>more user</title>
+</head>
+<body>
+    <form method="post" action="/LandmarksInLands/admin/user/update/{{ repo.username }}">
+        <label>Username</label>
+        <input type="text" name="new_username" value="{{ repo.username }}">
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ repo.email }}">
+
+        <label>Is admin</label>
+        <input type="checkbox" name="is_admin" value="true" {% if repo.is_admin %}checked{% endif %}>
+
+        <button type="submit">save</button>
+    </form>
+</body>
+</html>

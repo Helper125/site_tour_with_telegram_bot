@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Landmarks</title>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">🌍 Lands</span>
+        </div>
+        {% if user and user.is_admin %}
+            <div>
+                <span class="navbar"><a href="/LandmarksInLands/admin">admin_panel</a></span>
+                <span><a href="/LandmarksInLands/logout">logout</a></span>
+            </div>
+        {% elif user %}
+            <div>
+                <span><a href="/LandmarksInLands/logout">logout</a></span>
+            </div>
+        {% else %}
+            <div>
+                <span><a href="/LandmarksInLands/register">Register</a> or <a href="/LandmarksInLands/login">Login</a></span>
+            </div>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Країни</h2>
+        {% if user %}
+            <h3>Hello {{ user.username }}! Where we going today?</h3>
+        {% else %}
+            <h3>Hello! Where we going today?</h3>
+        {% endif %}
+        <div class="row g-3">
+            {% for land in alls %}
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ land.name }}</h5>
+                        <h2>{{ land.id }}</h2>
+                        <a href="/LandmarksInLands/land/{{ land.name }}" class="btn btn-outline-dark btn-sm">cities</a>
+                        {% if user and user.is_admin %}
+                            <a href="/LandmarksInLands/land/delete_land/{{ land.id }}">delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
