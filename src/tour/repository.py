@@ -10,128 +10,94 @@ class LandsRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create(self, data: LandCreate):
-        existing = await self.db.scalar(select(Lands).where(Lands.name == data.name))
-        if existing:
-            raise HTTPException(status_code=400, detail="Already exists")
-        land = Lands(**data.model_dump())
-        self.db.add(land)
-        await self.db.flush()
-        return land
+    async def get_all(self, page: int, limit: int, search_query: str):
+        offset = (page - 1) * limit
 
-    async def get_all(self, page: int = 0, limit: int = 100):
-        if page < 1:
-            page = 1
-        skip = (page - 1) * limit
+        query = select(Lands)
+        count_stmt = select(func.count()).select_from(Lands)
+        if search_query:
+            condition = Lands.name.ilike(f"%{search_query}%")
 
-        total = await self.db.scalar(select(func.count()).select_from(Lands))
+            query = query.where(condition)
+            count_stmt = count_stmt.where(condition)
 
-        stmt = select(Lands).offset(skip).limit(limit)
-        result = await self.db.scalars(stmt)
-        items = result.all()
+        total = await self.db.scalar(count_stmt)
+
+        lands = await self.db.scalars(query.offset(offset).limit(limit))
+
         return {
-            "items": items,
+            "item": lands.all(),
             "total": total,
             "page": page,
             "limit": limit,
-            "pages": -(-total // limit)
+            "pages": (total + page - 1) // limit
         }
-    
+
     
     async def get_one(self, data: str):
         correct_text = data.lower().title()
         stmt = select(Lands).where(Lands.name == correct_text)
         result = await self.db.scalars(stmt)
         return result.all()
-    
-    async def update(self, id: int, data: LandUpdate):
-        lands = await self.db.get(Lands, id)
-        if not lands:
-            raise HTTPException(status_code=404, detail="Not found")
-        lands.name = data.name
-        return lands
-    
-    async def delete(self, id: int):
-        lands = await self.db.get(Lands, id)
-        if not lands:
-            raise HTTPException(status_code=404, detail="Not found")
-        await self.db.delete(lands)
-        return True
 
 
 class CitiesRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
-
-    async def create(self, data: CityCreate):
-        existing = await self.db.scalar(select(City).where(City.name == data.name))
-        if existing:
-            raise HTTPException(status_code=400, detail="Already exists")
-        city = City(**data.model_dump())
-        self.db.add(city)
-        await self.db.flush()
-        return city
     
-    async def get_all(self, page: int = 0, limit: int = 100):
-        if page < 1:
-            page = 1
-        skip = (page - 1) * limit
+    async def get_all(self, page: int, limit: int, search_query: str):
+        offset = (page - 1) * limit
 
-        total = await self.db.scalar(select(func.count()).select_from(City))
+        query = select(City)
+        count_stmt = select(func.count()).select_from(City)
 
-        stmt = select(City).offset(skip).limit(limit)
-        result = await self.db.scalars(stmt)
-        items = result.all()
+        if search_query:
+            condition = City.name.ilike(f"%{search_query}%")
+
+            query = query.where(condition)
+            count_stmt = count_stmt.where(condition)
+
+        total = await self.db.scalar(count_stmt)
+
+        city = await self.db.scalars(query.offset(offset).limit(limit))
+
         return {
-            "items": items,
+            "item": city.all(),
             "total": total,
             "page": page,
             "limit": limit,
-            "pages": -(-total // limit)
+            "pages": (total + page - 1) // limit
         }
-    
-    
-    async def update(self, id: int, data: CityUpdate):
-        cities = await self.db.get(City, id)
-        if not cities:
-            raise HTTPException(status_code=404, detail="Not found")
-        cities.name = data.name
-        cities.land_id = data.land_id
-        return cities
-    
-    async def delete(self, id: int | str):
-        cities = await self.db.get(City, id)
-        if not cities:
-            raise HTTPException(status_code=404, detail="Not found")
-        await self.db.delete(cities)
-        return True
 
-    async def get_cities_by_land(self, land_name: str):
-        stmt = select(City).join(City.land).where(Lands.name.ilike(land_name))
-        result = await self.db.scalars(stmt)
-        cities = result.all()
+    async def get_cities_by_land(self, land_name: str, page: int, limit: int, search_query: str):
+        offset = (page - 1) * limit
 
-        if not cities:
-            raise HTTPException(status_code=404, detail="Not found")
+        query = select(City).join(City.land).where(Lands.name == land_name)
+        count_stmt = select(func.count()).select_from(City).join(City.land).where(Lands.name == land_name)
+
+        if search_query:
+            condition = City.name.ilike(f"%{search_query}%")
+
+            query = query.where(condition)
+            count_stmt = count_stmt.where(condition)
+
+        total = await self.db.scalar(count_stmt)
+
+        city = await self.db.scalars(query.offset(offset).limit(limit))
 
         return {
-            "cities": cities,
-            "land": land_name
+            "cities": city.all(),
+            "land": land_name,
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "pages": (total + limit - 1) // limit
         }
     
 
 class LandmarksRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
-
-    async def create(self, data: LandmarkCreate):
-        existing = await self.db.scalar(select(Landmarks).where(Landmarks.name == data.name))
-        if existing:
-            raise HTTPException(status_code=400, detail="Already exists")
-        landmarks = Landmarks(**data.model_dump())
-        self.db.add(landmarks)
-        await self.db.flush()
-        return landmarks
     
     async def get_all(self, page: int = 1, limit = 100):
         if page < 1:
@@ -151,33 +117,116 @@ class LandmarksRepository:
             "pages": -(-total // limit)
         }
     
-    async def update(self, id: int, data: LandmarkUpdate):
-        landmarks = await self.db.get(Landmarks, id)
-        if not landmarks:
-            raise HTTPException(status_code=404, detail="Not found")
-        landmarks.name = data.name
-        landmarks.address = data.address
-        landmarks.description = data.description
-        landmarks.city_id = data.city_id
-        return landmarks
-    
-    async def delete(self, id: int):
-        landmarks = await self.db.get(Landmarks, id)
-        if not landmarks:
-            raise HTTPException(status_code=404, detail="Not found")
-        
-        await self.db.delete(landmarks)
-        return True
-    
-    async def get_landmarks_by_city(self, city_name: str):
-        stmt = select(Landmarks).join(Landmarks.city).where(City.name.ilike(city_name))
-        result = await self.db.scalars(stmt)
-        landmarks = result.all()
+    async def get_landmarks_by_city(self, city_name: str, page:int, limit: int, search_query: str):
+        offset = (page - 1) * limit
 
-        if not landmarks:
-            raise HTTPException(status_code=404, detail="Not found")
+        query = select(Landmarks).options(selectinload(Landmarks.city).selectinload(City.land)).join(Landmarks.city).where(City.name == city_name)
+        count_stmt = select(func.count()).select_from(Landmarks).join(Landmarks.city).where(City.name == city_name)
+
+        if search_query:
+            condition = Landmarks.name.ilike(f"%{search_query}%")
+
+            query = query.where(condition)
+            count_stmt = count_stmt.where(condition)
+
+        total = await self.db.scalar(count_stmt)
+
+        landmarks = await self.db.scalars(query.offset(offset).limit(limit))
+        result = landmarks.all()
+
+
         
         return {
-            "landmarks": landmarks,
-            "city": city_name
+            "landmarks": result,
+            "city": city_name,
+            "land": result[0].city.land.name,
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "pages": (total + limit - 1 ) // limit
             }
+    
+    async def get_one_landmark(self, landmark_name: str):
+        stmt = await self.db.scalar(select(Landmarks).options(selectinload(Landmarks.city)).where(Landmarks.name == landmark_name))
+        return stmt
+    
+
+class FavoriteLandsRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def get_all(self, user_id):
+        stmt = await self.db.scalars(select(FavoriteLands).options(selectinload(FavoriteLands.land)).where(FavoriteLands.user_id == user_id))
+        return {"stmt": stmt.all()}
+    
+    async def add_land(self, user_id, land_id):
+        land = FavoriteLands(land_id=land_id, user_id=user_id)
+        
+        self.db.add(land)
+        await self.db.commit()
+
+        return land
+
+    async def del_land(self, user_id, land_id):
+        land = await self.db.scalar(select(FavoriteLands).where(FavoriteLands.user_id == user_id, FavoriteLands.land_id == land_id))
+
+        if land:
+            await self.db.delete(land)
+            await self.db.commit()
+
+        return land
+
+
+class FavoriteCityRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def get_all(self, user_id):
+        stmt = await self.db.scalars(select(FavoriteCity).options(selectinload(FavoriteCity.city)).where(FavoriteCity.user_id == user_id))
+        return {"stmt": stmt.all()}
+    
+    async def add_city(self, user_id, city_id):
+        city = FavoriteCity(city_id=city_id, user_id=user_id)
+
+        if city:
+            self.db.add(city)
+            await self.db.commit()
+
+        return city
+    
+    async def del_city(self, user_id, city_id):
+        city = await self.db.scalars(select(FavoriteCity).where(FavoriteCity.user_id == user_id, FavoriteCity.city_id == city_id))
+
+        if city:
+            await self.db.delete(city)
+            await self.db.commit()
+
+        return city
+    
+
+class FavoriteLandmarksRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def get_all(self, user_id):
+        stmt = await self.db.scalars(select(FavoriteLandmarks).options(FavoriteLandmarks.landmark).where(FavoriteLandmarks.user_id == user_id))
+
+        return {"stmt": stmt.all()}
+    
+    async def add_landmark(self, user_id, landmark_id):
+        landmark = FavoriteLandmarks(user_id=user_id, landmark_id=landmark_id)
+
+        if landmark:
+            self.db.add(landmark)
+            await self.db.commit()
+        
+        return landmark
+
+    async def del_landmark(self, user_id, landmark_id):
+        landmark = FavoriteLandmarks(user_id=user_id, landmark_id=landmark_id)
+
+        if landmark:
+            await self.db.delete(landmark)
+            await self.db.commit()
+
+        return landmark

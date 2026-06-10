@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin_users</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin">Back</a>
+    <form method="get" action="/LandmarksInLands/admin/users">
+        <label>Search</label>
+        <input type="search" name="search_query" placeholder="Please write username">
+
+        <label>Id</label>
+        <input type="radio" name="sort_by" value="id" checked>
+
+        <label>Username</label>
+        <input type="radio" name="sort_by" value="username">
+
+        <button type="submit">Save</button>
+    </form>
+    <a href="/LandmarksInLands/admin/add_user">add user</a>
+    {% if repo %}
+        <form method="post" action="/LandmarksInLands/admin/user/delete">
+            <select name="action">
+                <option selected>-----</option>
+                <option value="delete_objects">Delete object</option>
+            </select>
+            <button type="submit">Go</button>
+            <div class="container">
+                <div>
+                    <table>
+                        <tr>
+                            <th>action</th>
+                            <th>id</th>
+                            <th>username</th>
+                            <th>is_admin</th>
+                        </tr>
+                        {% for users in repo %}
+                            <tr>
+                                <td><input type="checkbox" name="user_id" value="{{ users.id }}"></td>
+                                <td>({{ users.id }})</td>
+                                <td> <a href="/LandmarksInLands/admin/user/{{ users.username }}">{{ users.username }}</a></td>
+                                <td>{{ users.is_admin }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <h2>don`t have users</h2>
+    {% endif %}
+</div>
+</body>
+</html>

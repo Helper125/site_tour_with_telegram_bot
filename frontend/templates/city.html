@@ -11,6 +11,7 @@
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
             <span class="navbar-brand">🌍 Cities</span>
+            <a href="/LandmarksInLands/lands">Back</a>
         </div>
     </nav>
 
@@ -18,21 +19,41 @@
         <h2 class="mb-4">Cities in {{ alls.land }}</h2>
         <div id="city" class="row g-3"></div>
     </div>
+    <form method="get" action="/LandmarksInLands/land/{{ alls.land }}">
+        <label>Search</label>
+        <input type="search" name="search_query">
+        <button type="submit">search</button>
+    </form>
 
-    <div class="container">
-        <div class="row g-3">
-            {% for cities in alls.cities %}
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ cities.name }}</h5>
-                        <h3>{{ cities.id }}</h3>
-                        <a href="/LandmarksInLands/city/{{ cities.name }}" class="btn btn-outline-dark btn-sm">landmarks</a>
+    {% if alls.cities %}
+        <div class="container">
+            <div class="row g-3">
+                {% for cities in alls.cities %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cities.name }}</h5>
+                            <h3>{{ cities.id }}</h3>
+                            <a href="/LandmarksInLands/city/{{ cities.name }}" class="btn btn-outline-dark btn-sm">landmarks</a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
+    {% else %}
+        <h3>This land is don`t have cities</h3>
+    {% endif %}
+
+    <h3>{% if page > 1 %}
+        <a href="?page={{ page - 1 }}">Pervious</a>
+    {% endif %}
+
+    page {{ page }} of {{ pages }}
+    
+    {% if page < pages %}
+        <a href="?page={{ page + 1 }}">Next</a>
+    {% endif %}</h3>
+
 </body>
 </html>

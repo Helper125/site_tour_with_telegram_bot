@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin/landmarks">Back</a>
+    <form method="post" action="/LandmarksInLands/admin/add_landmarks">
+        <label>name</label>
+        <input type="text" name="name" placeholder="name" required>
+
+        <labe>address</labe>
+        <input type="text" name="address" placeholder="address" required>
+
+        <label>description</label>
+        <input type="text" name="description" placeholder="description" required>
+
+        <label>land</label>
+        <select name="city_id" required>
+            {% for city in repo %}
+                <option value="{{ city.id }}">{{ city.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">create</button>
+    </form>
+</body>
+</html>

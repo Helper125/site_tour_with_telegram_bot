@@ -4,7 +4,7 @@ from sqlalchemy import select
 from fastapi import Depends, Request
 from .schemas import LandCreate, LandmarkUpdate
 from ..db.dependency import get_db
-from .models import Lands, City
+from .models import FavoriteLands, FavoriteCity, FavotiteLandmarks
 # from main import templates
 
 async def home(session: AsyncSession):

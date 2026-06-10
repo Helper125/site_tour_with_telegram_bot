@@ -19,7 +19,7 @@ async def register_user(data: Register, db: AsyncSession = Depends(get_db)):
     token = await repo.register(data)
 
     response = JSONResponse(content={"success": True})
-    response.set_cookie(key="token", value=token, httponly=True, max_age=60 * 60 * 24)
+    response.set_cookie(key="token", value=token, httponly=True, max_age=60 * 60 * 24, expires=60 * 60 * 24)
     return response
 
 @auth_router.get("/login", response_class=HTMLResponse)
@@ -32,12 +32,12 @@ async def login_user(data: Login, db: AsyncSession = Depends(get_db)):
     token = await repo.login(data)
 
     response = JSONResponse(content={"success": True})
-    response.set_cookie(key="token", value=token, httponly=True, max_age=60)
+    response.set_cookie(key="token", value=token, httponly=True, max_age=60 * 60 * 24)
     return response
 
 @auth_router.get("/logout")
 async def logout_user():
-    response = RedirectResponse(url="/LandmarksInLands/all_land", status_code=302)
+    response = RedirectResponse(url="/LandmarksInLands/lands", status_code=302)
     response.delete_cookie(key="token")
     return response
 

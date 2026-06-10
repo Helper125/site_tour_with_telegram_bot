@@ -6,6 +6,7 @@
     <title>more user</title>
 </head>
 <body>
+    <a href="/LandmarksInLands/admin/users">Back</a>
     <form method="post" action="/LandmarksInLands/admin/user/update/{{ repo.username }}">
         <label>Username</label>
         <input type="text" name="new_username" value="{{ repo.username }}">
@@ -18,5 +19,6 @@
 
         <button type="submit">save</button>
     </form>
+    <a href="/LandmarksInLands/admin/one_user/delete/{{ repo.id }}">Delete user</a>
 </body>
 </html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add user</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin/users">Back</a>
+    <form method="post" action="/LandmarksInLands/admin/add_user">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="username" required>
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="email@gmail.com" required>
+
+        <label>Is admin</label>
+        <input type="checkbox" name="is_admin">
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="password" required>
+        
+        <button type="submit">create</button>
+    </form>
+</body>
+</html>

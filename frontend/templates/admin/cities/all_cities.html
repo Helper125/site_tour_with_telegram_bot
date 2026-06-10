@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>all_cities</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin">Back</a>
+    <form method="get" action="/LandmarksInLands/admin/cities">
+        <label>Search</label>
+        <input type="search" name="search_query" placeholder="Please write name city">
+
+        <label>Id</label>
+        <input type="radio" name="sort_by" value="id" checked>
+
+        <label>Name</label>
+        <input type="radio" name="sort_by" value="name">
+
+        <button type="submit">sort</button>
+    </form>
+    <a href="/LandmarksInLands/admin/add_city">add city</a>
+    {% if cities %}
+        <form method="post" action="/LandmarksInLands/admin/city/delete">
+            <select name="action">
+                <option>-----</option>
+                <option value="delete_objects">Delete objects</option>
+            </select>
+            <button type="submit">Go</button>
+            <div class="container">
+                <div>
+                    <table>
+                        <tr>
+                            <th>action</th>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>land</th>
+                        </tr>
+                        {% for item in cities %}
+                            <tr>
+                                <td><input type="checkbox" name="city_id" value="{{ item.id }}"></td>
+                                <td>({{ item.id }})</td>
+                                <td><a href="/LandmarksInLands/admin/city_more/{{ item.name }}">{{ item.name }}</a></td>
+                                <td><a href="/LandmarksInLands/admin/land_more/{{ item.land.name }}">{{ item.land.name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </form>
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">Pervious</a>
+        {% endif %}
+
+        <h3>page {{ page }} of {{ pages }}</h3>
+
+        {% if page < pages %}
+            <a href="?page={{ page + 1 }}">Next</a>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

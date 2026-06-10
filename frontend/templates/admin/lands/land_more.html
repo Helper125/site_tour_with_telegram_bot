@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>city {{ result.name }}</title>
+    <title>Land {{ result.name }}</title>
 </head>
 <body>
-    <form method="post" action="/LandmarksInLands/admin/city/update/{{ result.name }}">
+    <a href="/LandmarksInLands/admin/lands">Back</a>
+    <form method="post" action="/LandmarksInLands/admin/land/update/{{ result.name }}">
         <label>name</label>
         <input type="text" name="new_name" value="{{ result.name }}">
 
-        <label>land</label>
-        <input type="text" name="land" value="{{ result.land.name }}">
-
         <button type="submit">save</button>
     </form>
+
+    <a href="/LandmarksInLands/admin/one_land/delete/{{ result.id }}">Delete land</a>
 </body>
 </html>

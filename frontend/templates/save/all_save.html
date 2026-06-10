@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save</title>
+</head>
+<body>
+    {% if land %}
+        <h2>Lands:</h2>
+        {% for lands in land %}
+            <h3>{{ lands.land.name }}</h3>
+            <a href="/LandmarksInLands/land/{{ lands.land.name }}">More</a>
+        {% endfor %}
+    {% endif %}
+    {% if city %}
+        <h2>City:</h2>
+        {% for cities in city %}
+            <h3>{{ cities.city.name }}</h3>
+            <a href="/LandmarksInLands/city/{{ cities.city.name }}">More</a>
+        {% endfor %}
+    {% endcity %}
+    {% if landmark %}
+        <h2>Landmarks:</h2>
+        {% for landmarks in landmark %}
+            <h3>{{ landmarks.landmark.name }}</h3>
+            <a href="/LandmarksInLands/landmark/{{ landmarks.landmark.name }}">More</a>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

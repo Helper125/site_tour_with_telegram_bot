@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>landmakrs {{ result.name }}</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin/landmarks">Back</a>
+    <form method="post" action="/LandmarksInLands/admin/landmark/update/{{ result.name }}">
+        <label>name</label>
+        <input type="text" name="new_name" value="{{ result.name }}">
+
+        <label>address</label>
+        <input type="text" name="address" value="{{ result.address }}">
+
+        <label>description</label>
+        <input type="text" name="description" value="{{ result.description }}">
+
+        <label>city</label>
+        <select name="city">
+            {% for all in cities %}
+                <option value="{{ all.id }}" name="city">
+                    {% if all.id == result.city.id %} select {% endif %}
+                    {{ all.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">save</button>
+    </form>
+
+    <a href="/LandmarksInLands/admin/one_landmark/delete/{{ result.id }}">Delete landmarks</a>
+</body>
+</html>

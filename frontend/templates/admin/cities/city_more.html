@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>city {{ result.name }}</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin/cities">Back</a>
+    <form method="post" action="/LandmarksInLands/admin/city/update/{{ result.name }}">
+        <label>name</label>
+        <input type="text" name="new_name" value="{{ result.name }}">
+
+        <label>land</label>
+        <select name="land">
+            {% for all in lands %}
+                <option value="{{ all.id }}" {% if all.id == result.land.id %} selected {% endif %}>
+                    {% if all.id == result.land.id %} select {% endif %}
+                    {{ all.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">save</button>
+    </form>
+
+    <a href="/LandmarksInLands/admin/one_city/delete/{{ result.id }}">Delete city</a>
+</body>
+</html>

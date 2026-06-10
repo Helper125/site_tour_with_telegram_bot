@@ -10,8 +10,14 @@
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
             <span class="navbar-brand">🌍 landmarks</span>
+            <a href="/LandmarksInLands/land/{{ land }}">Back</a>
         </div>
     </nav>
+    <form method="get" action="/LandmarksInLands/city/{{ alls.city }}">
+        <label>Search</label>
+        <input type="search" name="search_query">
+        <button type="submit">Search</button>
+    </form>
 
     <div class="container">
         <h2 class="mb-4">landmarkds in {{ alls.city }}</h2>
@@ -25,12 +31,23 @@
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">{{ landmarks.name }}</h5>
-                        <a href="/LandmarksInLands/landmarks/{{ landmarks.name }}" class="btn btn-outline-dark btn-sm">more</a>
+                        <a href="/LandmarksInLands/landmark/{{ landmarks.name }}" class="btn btn-outline-dark btn-sm">more</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+
+    <h3>{% if page > 1 %}
+            <a href="?page={{ page - 1 }}">Pervious</a>
+        {% endif %}
+
+        page {{ page }} of {{ pages }}
+        
+        {% if page < pages %}
+            <a href="?page={{ page + 1 }}">Next</a>
+        {% endif %}
+    </h3>
 </body>
 </html>

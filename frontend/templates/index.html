@@ -35,6 +35,11 @@
         {% else %}
             <h3>Hello! Where we going today?</h3>
         {% endif %}
+        <form method="get" action="/LandmarksInLands/lands">
+            <label>Search</label>
+            <input type="search" name="search_query" placeholder="Please write name land">
+            <button type="submit">search</button>
+        </form>
         <div class="row g-3">
             {% for land in alls %}
             <div class="col-md-4">
@@ -43,15 +48,22 @@
                         <h5 class="card-title">{{ land.name }}</h5>
                         <h2>{{ land.id }}</h2>
                         <a href="/LandmarksInLands/land/{{ land.name }}" class="btn btn-outline-dark btn-sm">cities</a>
-                        {% if user and user.is_admin %}
-                            <a href="/LandmarksInLands/land/delete_land/{{ land.id }}">delete</a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    <h3>{% if page > 1 %}
+        <a href="?page={{ page - 1 }}">Pervious</a>
+    {% endif %}
+    page {{ page }} of {{ pages }}
+
+    {% if page < pages %}
+        <a href="?page={{ page + 1 }}">Next</a>
+    {% endif %}
+    </h3>
+
 
 </body>
 </html>

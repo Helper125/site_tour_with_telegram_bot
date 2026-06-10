@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lands</title>
+</head>
+<body>
+    <a href="/LandmarksInLands/admin">Back</a>
+    <form method="get" action="/LandmarksInLands/admin/lands">
+        
+        <label for="search">Search</label>
+        <input type="search" name="search_query" placeholder="Please write name land">
+        <label>Id</label>
+        <input type="radio" name="sort_by" value="id" checked>
+
+        <label>Name</label>
+        <input type="radio" name="sort_by" value="name">
+
+        <button type="submit">save</button>
+    </form>
+    <a href="/LandmarksInLands/admin/add_land">add land</a>
+    {% if result %}
+        <form method="post" action="/LandmarksInLands/admin/land/delete">
+            <select name="action">
+                <option selected>-----</option>
+                <option value="delete_objects">Detele objects</option>
+            </select>
+            <button type="submit">Go</button>
+            <div class="container">
+                <div>
+                    <table>
+                        <tr>
+                            <th>action</th>
+                            <th>id</th>
+                            <th>name</th>
+                        </tr>
+                        {% for all in result %}
+                            <tr>
+                                <th><input type="checkbox" name="land_id" value="{{ all.id }}"></th>
+                                <td>({{ all.id }})</td>
+                                <td><a href="/LandmarksInLands/admin/land_more/{{ all.name }}">{{ all.name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+</body>
+</html>
