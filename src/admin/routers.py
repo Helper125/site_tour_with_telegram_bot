@@ -162,7 +162,7 @@ async def land_update_post(request: Request, name: str, new_name: str = Form(Non
     if isinstance(check_user, RedirectResponse):
         return check_user
     result = await edition_land_more(name, new_name, db)
-    return RedirectResponse(url=f"/LandmarksInLands/admin/land_more/{new_name or name}", status_code=302)
+    return RedirectResponse(url=f"/LandmarksInLands/admin/lands", status_code=302)
 
 
 @admin_router.get("/add_city")

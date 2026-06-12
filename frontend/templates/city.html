@@ -33,8 +33,18 @@
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
                             <h5 class="card-title">{{ cities.name }}</h5>
-                            <h3>{{ cities.id }}</h3>
                             <a href="/LandmarksInLands/city/{{ cities.name }}" class="btn btn-outline-dark btn-sm">landmarks</a>
+                            <form action="/LandmarksInLands/add-city-save" method="post">
+                                <input type="hidden" name="city_id" value="{{ cities.id }}">
+                                <input type="hidden" name="urls" value="{{ request.url }}">
+                                <button type="submit">
+                                    {% if cities.id in saved_ids %}
+                                        💚saved
+                                    {% else %}
+                                       🤍save
+                                    {% endif %} 
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

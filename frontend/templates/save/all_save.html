@@ -11,6 +11,11 @@
         {% for lands in land %}
             <h3>{{ lands.land.name }}</h3>
             <a href="/LandmarksInLands/land/{{ lands.land.name }}">More</a>
+            <form action="/LandmarksInLands/del-land-save" method="post">
+                <input type="hidden" name="land_id" value="{{ lands.land.id }}">
+                <input type="hidden" name="urls" value="{{ request.url }}">
+                <button type="submit">Del</button>
+            </form>
         {% endfor %}
     {% endif %}
     {% if city %}
@@ -18,13 +23,23 @@
         {% for cities in city %}
             <h3>{{ cities.city.name }}</h3>
             <a href="/LandmarksInLands/city/{{ cities.city.name }}">More</a>
+            <form action="/LandmarksInLands/del-city-save" method="post">
+                <input type="hidden" name="city_id" value="{{ cities.city.id }}">
+                <input type="hidden" name="urls" value="{{ request.url }}">
+                <button type="submit">Del</button>
+            </form>
         {% endfor %}
-    {% endcity %}
+    {% endif %}
     {% if landmark %}
         <h2>Landmarks:</h2>
         {% for landmarks in landmark %}
             <h3>{{ landmarks.landmark.name }}</h3>
             <a href="/LandmarksInLands/landmark/{{ landmarks.landmark.name }}">More</a>
+            <form action="/LandmarksInLands/del-landmark-save" method="post">
+                <input type="hidden" name="landmark_id" value="{{ landmarks.landmark.id }}">
+                <input type="hidden" name="urls" value="{{ request.url }}">
+                <button type="submit">Del</button>
+            </form>
         {% endfor %}
     {% endif %}
 </body>

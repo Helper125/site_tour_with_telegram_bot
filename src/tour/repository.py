@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select, func
 from .models import *
+from src.auth.models import User
 from .schemas import LandCreate, LandUpdate, CityCreate, CityUpdate, LandmarkCreate, LandmarkUpdate
 from fastapi import HTTPException
 
@@ -154,18 +155,28 @@ class LandmarksRepository:
 class FavoriteLandsRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
+    
+    async def get_saved_ids(self, user_id: int):
+        result = await self.db.scalars(select(FavoriteLands.land_id).where(FavoriteLands.user_id == user_id))
+        return set(result.all())
 
     async def get_all(self, user_id):
         stmt = await self.db.scalars(select(FavoriteLands).options(selectinload(FavoriteLands.land)).where(FavoriteLands.user_id == user_id))
-        return {"stmt": stmt.all()}
+        return stmt.all()
     
     async def add_land(self, user_id, land_id):
-        land = FavoriteLands(land_id=land_id, user_id=user_id)
-        
-        self.db.add(land)
-        await self.db.commit()
+        stmt = await self.db.execute(select(FavoriteLands).where(FavoriteLands.user_id == user_id, FavoriteLands.land_id == land_id))
+        obj = stmt.scalar_one_or_none()
 
-        return land
+        if obj:
+            await self.db.delete(obj)
+            await self.db.commit()
+            return False
+        else:
+            land = FavoriteLands(land_id=land_id, user_id=user_id)
+            self.db.add(land)
+            await self.db.commit()
+            return True
 
     async def del_land(self, user_id, land_id):
         land = await self.db.scalar(select(FavoriteLands).where(FavoriteLands.user_id == user_id, FavoriteLands.land_id == land_id))
@@ -181,21 +192,30 @@ class FavoriteCityRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    async def get_saved_ids(self, user_id: int):
+        stmt = await self.db.scalars(select(FavoriteCity.city_id).where(FavoriteCity.user_id == user_id))
+        return set(stmt.all())
+
     async def get_all(self, user_id):
         stmt = await self.db.scalars(select(FavoriteCity).options(selectinload(FavoriteCity.city)).where(FavoriteCity.user_id == user_id))
-        return {"stmt": stmt.all()}
+        return stmt.all()
     
     async def add_city(self, user_id, city_id):
-        city = FavoriteCity(city_id=city_id, user_id=user_id)
+        stmt = await self.db.execute(select(FavoriteCity).where(FavoriteCity.user_id == user_id, FavoriteCity.city_id == city_id))
+        obj = stmt.scalar_one_or_none()
 
-        if city:
+        if obj:
+            await self.db.delete(obj)
+            await self.db.commit()
+            return False
+        else:
+            city = FavoriteCity(city_id=city_id, user_id=user_id)
             self.db.add(city)
             await self.db.commit()
-
-        return city
+            return True
     
     async def del_city(self, user_id, city_id):
-        city = await self.db.scalars(select(FavoriteCity).where(FavoriteCity.user_id == user_id, FavoriteCity.city_id == city_id))
+        city = await self.db.scalar(select(FavoriteCity).where(FavoriteCity.user_id == user_id, FavoriteCity.city_id == city_id))
 
         if city:
             await self.db.delete(city)
@@ -208,22 +228,32 @@ class FavoriteLandmarksRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_all(self, user_id):
-        stmt = await self.db.scalars(select(FavoriteLandmarks).options(FavoriteLandmarks.landmark).where(FavoriteLandmarks.user_id == user_id))
+    async def get_saved_ids(self, user_id: int):
+        stmt = await self.db.scalars(select(FavoriteLandmarks.landmark_id).where(FavoriteLandmarks.user_id == user_id))
+        return set(stmt.all())
 
-        return {"stmt": stmt.all()}
+    async def get_all(self, user_id):
+        stmt = await self.db.scalars(select(FavoriteLandmarks).options(selectinload(FavoriteLandmarks.landmark)).where(FavoriteLandmarks.user_id == user_id))
+
+        return stmt.all()
     
     async def add_landmark(self, user_id, landmark_id):
-        landmark = FavoriteLandmarks(user_id=user_id, landmark_id=landmark_id)
+        stmt = await self.db.execute(select(FavoriteLandmarks).where(FavoriteLandmarks.user_id == user_id, FavoriteLandmarks.landmark_id == landmark_id))
+        obj = stmt.scalar_one_or_none()
 
-        if landmark:
+        if obj:
+            await self.db.delete(obj)
+            await self.db.commit()
+            return False
+        else:
+            landmark = FavoriteLandmarks(user_id=user_id, landmark_id=landmark_id)
+
             self.db.add(landmark)
             await self.db.commit()
-        
-        return landmark
+            return True
 
     async def del_landmark(self, user_id, landmark_id):
-        landmark = FavoriteLandmarks(user_id=user_id, landmark_id=landmark_id)
+        landmark = await self.db.scalar(select(FavoriteLandmarks).where(FavoriteLandmarks.user_id == user_id, FavoriteLandmarks.landmark_id == landmark_id))
 
         if landmark:
             await self.db.delete(landmark)
