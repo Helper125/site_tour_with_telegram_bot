@@ -3,15 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>add land</title>
+    <title>Add Land</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin/lands">Back</a>
-    <form method="post" action="/LandmarksInLands/admin/add_land">
-        <label>name</label>
-        <input type="text" name="name" placeholder="name" required>
 
-        <button type="submit">create</button>
-    </form>
+<div class="container">
+
+    <div class="top-bar">
+
+        <h1>🌍 Add Land</h1>
+
+        <a
+            href="/LandmarksInLands/admin/lands"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form method="post" action="/LandmarksInLands/admin/add_land">
+
+            <div class="search-row" style="flex-direction:column; align-items:flex-start;">
+
+                <label>Land name</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter land name"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="margin-top:15px;"
+                >
+                    Create Land
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 </body>
 </html>

@@ -3,22 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>more user</title>
+    <title>Edit User</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin/users">Back</a>
-    <form method="post" action="/LandmarksInLands/admin/user/update/{{ repo.username }}">
-        <label>Username</label>
-        <input type="text" name="new_username" value="{{ repo.username }}">
 
-        <label>Email</label>
-        <input type="email" name="email" value="{{ repo.email }}">
+<div class="container">
 
-        <label>Is admin</label>
-        <input type="checkbox" name="is_admin" value="true" {% if repo.is_admin %}checked{% endif %}>
+    <div class="top-bar">
 
-        <button type="submit">save</button>
-    </form>
-    <a href="/LandmarksInLands/admin/one_user/delete/{{ repo.id }}">Delete user</a>
+        <h1>👤 Edit User</h1>
+
+        <a
+            href="/LandmarksInLands/admin/users"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form
+            method="post"
+            action="/LandmarksInLands/admin/user/update/{{ repo.id }}"
+        >
+
+            <div class="search-row" style="flex-direction:column; align-items:flex-start;">
+
+                <label>Username</label>
+                <input
+                    type="text"
+                    name="new_username"
+                    value="{{ repo.username }}"
+                    required
+                >
+
+                <label>Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ repo.email }}"
+                    required
+                >
+
+                <label style="display:flex; align-items:center; gap:10px;">
+                    <input
+                        type="checkbox"
+                        name="is_admin"
+                        value="true"
+                        {% if repo.is_admin %}checked{% endif %}
+                    >
+                    Is Admin
+                </label>
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="margin-top:15px;"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="card">
+
+        <a
+            href="/LandmarksInLands/admin/one_user/delete/{{ repo.id }}"
+            class="btn btn-danger"
+        >
+            Delete User
+        </a>
+
+    </div>
+
+</div>
+
 </body>
 </html>

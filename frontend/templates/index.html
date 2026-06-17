@@ -3,76 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='static/css/lands.css') }}">
     <title>Landmarks</title>
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">🌍 Lands</span>
-        </div>
+<!-- NAVBAR -->
+<nav>
+    <div class="navbar-brand">🌍 Lands</div>
+
+    <div>
         {% if user and user.is_admin %}
-            <div>
-                <span class="navbar"><a href="/LandmarksInLands/admin">admin_panel</a></span>
-                <span><a href="/LandmarksInLands/logout">logout</a></span>
-            </div>
+            <a href="/LandmarksInLands/admin">admin</a>
+            <a href="/LandmarksInLands/logout">logout</a>
+            <a href="/LandmarksInLands/save">save</a>
+
         {% elif user %}
-            <div>
-                <span><a href="/LandmarksInLands/logout">logout</a></span>
-            </div>
-        {% else %}
-            <div>
-                <span><a href="/LandmarksInLands/register">Register</a> or <a href="/LandmarksInLands/login">Login</a></span>
-            </div>
-        {% endif %}
-    </nav>
+            <a href="/LandmarksInLands/logout">logout</a>
+            <a href="/LandmarksInLands/save">save</a>
 
-    <div class="container">
-        <h2 class="mb-4">Країни</h2>
-        {% if user %}
-            <h3>Hello {{ user.username }}! Where we going today?</h3>
         {% else %}
-            <h3>Hello! Where we going today?</h3>
+            <a href="/LandmarksInLands/register">register</a>
+            <a href="/LandmarksInLands/login">login</a>
         {% endif %}
-        <form method="get" action="/LandmarksInLands/lands">
-            <label>Search</label>
-            <input type="search" name="search_query" placeholder="Please write name land">
-            <button type="submit">search</button>
-        </form>
-        <div class="row g-3">
-            {% for land in alls %}
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ land.name }}</h5>
-                        <h2>{{ land.id }}</h2>
-                        <a href="/LandmarksInLands/land/{{ land.name }}" class="btn btn-outline-dark btn-sm">cities</a>
-                        <form action="/LandmarksInLands/add-land-save" method="post">
-                            <input type="hidden" name="land_id" value="{{ land.id }}">
-                            <input type="hidden" name="urls" value="{{ request.url }}">
-                            <button type="submit" class="btn btn-outline-dark btn-sm">
-                                {% if land.id in saved_ids %}
-                                    💚saved
-                                {% else %}
-                                    🤍save
-                                {% endif %}</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
     </div>
-    <h3>{% if page > 1 %}
-        <a href="?page={{ page - 1 }}">Pervious</a>
-    {% endif %}
-    page {{ page }} of {{ pages }}
+</nav>
 
-    {% if page < pages %}
-        <a href="?page={{ page + 1 }}">Next</a>
+<!-- MAIN -->
+<div class="container">
+
+    <h2>Країни</h2>
+
+    {% if user %}
+        <h3>Hello {{ user.username }} 👋</h3>
+    {% else %}
+        <h3>Hello! Where we going today? 🌍</h3>
     {% endif %}
-    </h3>
+
+    <!-- SEARCH -->
+    <form class="search-form" method="get" action="/LandmarksInLands/lands">
+        <input type="search" name="search_query" placeholder="Search land...">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- GRID -->
+    <div class="row">
+
+        {% for land in alls %}
+
+        <div class="card">
+
+            <div class="card-title">
+                {{ land.name }}
+            </div>
+
+            <a class="btn btn-cities"
+               href="/LandmarksInLands/land/{{ land.name }}">
+                Cities
+            </a>
+
+            {% if user %}
+            <form action="/LandmarksInLands/add-land-save" method="post">
+                <input type="hidden" name="land_id" value="{{ land.id }}">
+                <input type="hidden" name="urls" value="{{ request.url }}">
+
+                <button type="submit"
+                        class="btn {% if land.id in saved_ids %}btn-saved{% else %}btn-save{% endif %}">
+                    {% if land.id in saved_ids %}
+                        💚 saved
+                    {% else %}
+                        🤍 save
+                    {% endif %}
+                </button>
+            </form>
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">← Previous</a>
+        {% endif %}
+
+        <span>Page {{ page }} of {{ pages }}</span>
+
+        {% if page < pages %}
+            <a href="?page={{ page + 1 }}">Next →</a>
+        {% endif %}
+
+    </div>
+
+</div>
 
 
 </body>

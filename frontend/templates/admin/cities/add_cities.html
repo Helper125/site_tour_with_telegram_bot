@@ -3,21 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add City</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin/cities">Back</a>
-    <form method="post" action="/LandmarksInLands/admin/add_city">
-        <label>name</label>
-        <input type="text" name="name" placeholder="name" required>
 
-        <label>land</label>
-        <select name="land_id">
-            {% for land in repo %}
-                <option value="{{ land.id }}">{{ land.name }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">create</button>
-    </form>
+<div class="container">
+
+    <div class="top-bar">
+
+        <h1>➕ Add City</h1>
+
+        <a
+            href="/LandmarksInLands/admin/cities"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form method="post" action="/LandmarksInLands/admin/add_city">
+
+            <div class="search-row" style="flex-direction:column; align-items:flex-start;">
+
+                <label>City name</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter city name"
+                    required
+                >
+
+                <label>Land</label>
+
+                <select name="land_id">
+
+                    {% for land in repo %}
+
+                    <option value="{{ land.id }}">
+                        {{ land.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="margin-top:15px;"
+                >
+                    Create City
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 </body>
 </html>

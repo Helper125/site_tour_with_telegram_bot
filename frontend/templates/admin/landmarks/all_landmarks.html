@@ -3,60 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>all landmarks</title>
+    <title>Landmarks</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin">Back</a>
-    <form method="get" action="/LandmarksInLands/admin/landmarks">
-        <label>Search</label>
-        <input type="search" name="search_query" placeholder="Please write name landmarks">
 
-        <label>Id</label>
-        <input type="radio" name="sort_by" value="id" checked>
+<div class="container">
 
-        <label>Name</label>
-        <input type="radio" name="sort_by" value="name">
-        
-        <button type="submit">Save</button>
-    </form>
-    <a href="/LandmarksInLands/admin/add_landmarks">add landmarks</a>
-    {% if item %}
-        <form method="post" action="/LandmarksInLands/admin/landmark/delete">
-            <select name="action">
-                <option selected>-----</option>
-                <option value="delete_objects">Delete object</option>
-            </select>
-            <button type="submit">Go</button>
-            <div class="container">
-                <div>
-                    <table>
-                        <tr>
-                            <th>action</th>
-                            <th>id</th>
-                            <th>name</th>
-                            <th>city</th>
-                        </tr>
-                        {% for landmarks in item %}
-                            <tr>
-                                <td><input type="checkbox" name="landmark_id" value="{{ landmarks.id }}"></td>
-                                <td>({{ landmarks.id }})</td>
-                                <td><a href="/LandmarksInLands/admin/landmark_more/{{ landmarks.name }}">{{ landmarks.name }}</a></td>
-                                <td><a href="/LandmarksInLands/admin/city_more/{{ landmarks.city.name }}">{{ landmarks.city.name }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+    <div class="top-bar">
+
+        <h1>📍 Landmarks</h1>
+
+        <div>
+
+            <a
+                href="/LandmarksInLands/admin"
+                class="btn"
+            >
+                ← Back
+            </a>
+
+            <a
+                href="/LandmarksInLands/admin/add_landmarks"
+                class="btn"
+            >
+                + Add Landmark
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <form
+            method="get"
+            action="/LandmarksInLands/admin/landmarks"
+        >
+
+            <div class="search-row">
+
+                <input
+                    type="search"
+                    name="search_query"
+                    placeholder="Search landmark..."
+                >
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="id"
+                        checked
+                    >
+                    ID
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="name"
+                    >
+                    Name
+                </label>
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Search
+                </button>
+
             </div>
+
         </form>
 
-        <h2>{% if page > 1 %} 
-            <a href="?page={{ page - 1 }}">Pervious</a> 
-            {% endif %} 
-            page {{ page }} of {{ pages }} 
-            {% if page < pages %}
-                <a href="?page={{ page + 1 }}">Next</a>
-            {% endif %} 
-        </h2>
+    </div>
+
+    {% if item %}
+
+    <form
+        method="post"
+        action="/LandmarksInLands/admin/landmark/delete"
+    >
+
+        <div class="card">
+
+            <div class="actions">
+
+                <select name="action">
+
+                    <option value="">
+                        Choose action
+                    </option>
+
+                    <option value="delete_objects">
+                        Delete selected
+                    </option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Apply
+                </button>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Select</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>City</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for landmarks in item %}
+
+                    <tr>
+
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="landmark_id"
+                                value="{{ landmarks.id }}"
+                            >
+                        </td>
+
+                        <td>
+                            {{ landmarks.id }}
+                        </td>
+
+                        <td>
+                            <a href="/LandmarksInLands/admin/landmark_more/{{ landmarks.name }}">
+                                {{ landmarks.name }}
+                            </a>
+                        </td>
+
+                        <td>
+                            <a href="/LandmarksInLands/admin/city_more/{{ landmarks.city.name }}">
+                                {{ landmarks.city.name }}
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </form>
+
+    <div class="pagination">
+
+        {% if page > 1 %}
+
+        <a
+            href="?page={{ page - 1 }}"
+            class="btn"
+        >
+            ← Previous
+        </a>
+
+        {% endif %}
+
+        <span>
+            Page {{ page }} of {{ pages }}
+        </span>
+
+        {% if page < pages %}
+
+        <a
+            href="?page={{ page + 1 }}"
+            class="btn"
+        >
+            Next →
+        </a>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="card">
+
+        <h3>
+            No landmarks found.
+        </h3>
+
+    </div>
+
     {% endif %}
+
+</div>
+
 </body>
 </html>

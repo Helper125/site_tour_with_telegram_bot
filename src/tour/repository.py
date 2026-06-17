@@ -49,7 +49,7 @@ class CitiesRepository:
     async def get_all(self, page: int, limit: int, search_query: str):
         offset = (page - 1) * limit
 
-        query = select(City)
+        query = select(City).options(selectinload(City.land))
         count_stmt = select(func.count()).select_from(City)
 
         if search_query:
@@ -73,7 +73,7 @@ class CitiesRepository:
     async def get_cities_by_land(self, land_name: str, page: int, limit: int, search_query: str):
         offset = (page - 1) * limit
 
-        query = select(City).join(City.land).where(Lands.name == land_name)
+        query = select(City).options(selectinload(City.land)).join(City.land).where(Lands.name == land_name)
         count_stmt = select(func.count()).select_from(City).join(City.land).where(Lands.name == land_name)
 
         if search_query:
@@ -135,12 +135,12 @@ class LandmarksRepository:
         landmarks = await self.db.scalars(query.offset(offset).limit(limit))
         result = landmarks.all()
 
-
+        city = await self.db.scalar(select(City).options(selectinload(City.land)).where(City.name == city_name))
         
         return {
             "landmarks": result,
             "city": city_name,
-            "land": result[0].city.land.name,
+            "land": city.land.name if city and city.land else None,
             "total": total,
             "page": page,
             "limit": limit,

@@ -3,54 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>admin_users</title>
+    <title>Users</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin">Back</a>
-    <form method="get" action="/LandmarksInLands/admin/users">
-        <label>Search</label>
-        <input type="search" name="search_query" placeholder="Please write username">
 
-        <label>Id</label>
-        <input type="radio" name="sort_by" value="id" checked>
+<div class="container">
 
-        <label>Username</label>
-        <input type="radio" name="sort_by" value="username">
+    <div class="top-bar">
 
-        <button type="submit">Save</button>
-    </form>
-    <a href="/LandmarksInLands/admin/add_user">add user</a>
-    {% if repo %}
-        <form method="post" action="/LandmarksInLands/admin/user/delete">
-            <select name="action">
-                <option selected>-----</option>
-                <option value="delete_objects">Delete object</option>
-            </select>
-            <button type="submit">Go</button>
-            <div class="container">
-                <div>
-                    <table>
-                        <tr>
-                            <th>action</th>
-                            <th>id</th>
-                            <th>username</th>
-                            <th>is_admin</th>
-                        </tr>
-                        {% for users in repo %}
-                            <tr>
-                                <td><input type="checkbox" name="user_id" value="{{ users.id }}"></td>
-                                <td>({{ users.id }})</td>
-                                <td> <a href="/LandmarksInLands/admin/user/{{ users.username }}">{{ users.username }}</a></td>
-                                <td>{{ users.is_admin }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+        <h1>👤 Users</h1>
+
+        <div>
+
+            <a
+                href="/LandmarksInLands/admin"
+                class="btn"
+            >
+                ← Back
+            </a>
+
+            <a
+                href="/LandmarksInLands/admin/add_user"
+                class="btn"
+            >
+                + Add User
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <form
+            method="get"
+            action="/LandmarksInLands/admin/users"
+        >
+
+            <div class="search-row">
+
+                <input
+                    type="search"
+                    name="search_query"
+                    placeholder="Search username..."
+                >
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="id"
+                        checked
+                    >
+                    ID
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="username"
+                    >
+                    Username
+                </label>
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Search
+                </button>
+
             </div>
+
         </form>
+
+    </div>
+
+    {% if repo %}
+
+    <form
+        method="post"
+        action="/LandmarksInLands/admin/user/delete"
+    >
+
+        <div class="card">
+
+            <div class="actions">
+
+                <select name="action">
+
+                    <option value="">
+                        Choose action
+                    </option>
+
+                    <option value="delete_objects">
+                        Delete selected
+                    </option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Apply
+                </button>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Select</th>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Is Admin</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for users in repo %}
+
+                    <tr>
+
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="user_id"
+                                value="{{ users.id }}"
+                            >
+                        </td>
+
+                        <td>
+                            {{ users.id }}
+                        </td>
+
+                        <td>
+                            <a href="/LandmarksInLands/admin/user/{{ users.username }}">
+                                {{ users.username }}
+                            </a>
+                        </td>
+
+                        <td>
+                            {{ users.is_admin }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </form>
+
     {% else %}
-        <h2>don`t have users</h2>
+
+    <div class="card">
+        <h3>No users found</h3>
+    </div>
+
     {% endif %}
+
 </div>
+
 </body>
 </html>

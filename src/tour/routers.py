@@ -20,8 +20,12 @@ async def get_home(request:Request, db: AsyncSession = Depends(get_db)):
 @tours_router.get("/lands", tags=["Land"], summary="all lands", response_class=HTMLResponse)
 async def all_Land(request: Request, page: int = 1, limit: int = 3, search_query: str = Query(None), db: AsyncSession = Depends(get_db)):
     user = await get_current_user(request, db)
-    repo_favorite = FavoriteLandsRepository(db)
-    saved_ids = await repo_favorite.get_saved_ids(user.id)
+
+    if user:
+        repo_favorite = FavoriteLandsRepository(db)
+        saved_ids = await repo_favorite.get_saved_ids(user.id)
+    else:
+        saved_ids = []
     repo = LandsRepository(db)
     alls = await repo.get_all(page, limit, search_query)
     return templates.TemplateResponse(name="index.html", request=request, context={"alls":alls["item"], "total": alls["total"], "page": alls["page"], "limit": alls["limit"], "pages": alls["pages"], "user":user, "saved_ids": saved_ids})
@@ -29,26 +33,42 @@ async def all_Land(request: Request, page: int = 1, limit: int = 3, search_query
 @tours_router.get("/land/{land_name}", tags=["City"], response_class=HTMLResponse)
 async def get_cities_by_land(request: Request, land_name: str, page: int = 1, limit = 10, search_query: str = Query(None), db: AsyncSession = Depends(get_db)):
     user = await get_current_user(request, db)
-    repo_favorite = FavoriteCityRepository(db)
-    saved_ids = await repo_favorite.get_saved_ids(user.id)
+
+    if user:
+        repo_favorite = FavoriteCityRepository(db)
+        saved_ids = await repo_favorite.get_saved_ids(user.id)
+    else:
+        saved_ids = []
     repo = CitiesRepository(db)
     alls = await repo.get_cities_by_land(land_name, page, limit, search_query)
-    return templates.TemplateResponse(name="city.html", request=request, context={"alls":alls, "total": alls["total"], "page": alls["page"], "limit": alls["limit"], "pages": alls["pages"], "saved_ids":saved_ids})
+    return templates.TemplateResponse(name="city.html", request=request, context={"alls":alls, "total": alls["total"], "page": alls["page"], "limit": alls["limit"], "pages": alls["pages"], "saved_ids":saved_ids, "user":user})
 
 @tours_router.get("/city/{city_name}", tags=["landmark"], response_class=HTMLResponse)
 async def get_landmark_by_cities(request: Request, city_name: str, page: int = 1, limit = 10, search_query: str = Query(None), db: AsyncSession = Depends(get_db)):
     user = await get_current_user(request, db)
-    repo_favorite = FavoriteLandmarksRepository(db)
-    saved_ids = await repo_favorite.get_saved_ids(user.id)
+
+    if user:
+        repo_favorite = FavoriteLandmarksRepository(db)
+        saved_ids = await repo_favorite.get_saved_ids(user.id)
+    else:
+        saved_ids = []
     repo = LandmarksRepository(db)
     alls = await repo.get_landmarks_by_city(city_name, page, limit, search_query)
-    return templates.TemplateResponse(name="landmarks.html", request=request, context={"alls":alls, "total":alls["total"], "page":alls["page"], "limit":alls["limit"], "pages":alls["pages"], "land": alls["land"], "saved_ids":saved_ids})
+    return templates.TemplateResponse(name="landmarks.html", request=request, context={"alls":alls, "total":alls["total"], "page":alls["page"], "limit":alls["limit"], "pages":alls["pages"], "land": alls["land"], "saved_ids":saved_ids, "user":user})
 
 @tours_router.get("/landmark/{landmark_name}")
 async def get_landmark(request: Request, landmark_name: str, db: AsyncSession = Depends(get_db)):
+    user = await get_current_user(request, db)
+
+    if user:
+        repo_favorite = FavoriteLandmarksRepository(db)
+        saved_ids = await repo_favorite.get_saved_ids(user.id)
+    else:
+        saved_ids = []
+
     repository = LandmarksRepository(db)
     repo = await repository.get_one_landmark(landmark_name)
-    return templates.TemplateResponse(name="landmark_more.html", request=request, context={"repo":repo})
+    return templates.TemplateResponse(name="landmark_more.html", request=request, context={"repo":repo, "saved_ids":saved_ids, "user":user})
 
 
 @tours_router.get("/save", response_class=HTMLResponse)

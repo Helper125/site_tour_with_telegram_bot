@@ -4,11 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ repo.name }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='static/css/lands.css') }}">
 </head>
+
 <body>
-    <a href="/LandmarksInLands/city/{{ repo.city.name }}">Back</a>
-    <h3>{{ repo.name }}</h3>
-    <h3>{{ repo.address }}</h3>
-    <h3>{{ repo.description }}</h3>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="navbar-brand">📍 Landmark</div>
+
+    <div>
+        <a href="/LandmarksInLands/city/{{ repo.city.name }}">← Back</a>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- CARD -->
+    <div class="detail-card">
+
+        <h1 class="title">{{ repo.name }}</h1>
+
+        <div class="info">
+            <p><strong>Address:</strong> {{ repo.address }}</p>
+            <p><strong>Description:</strong> {{ repo.description }}</p>
+        </div>
+
+        {% if user %}
+        <form action="/LandmarksInLands/add-landmark-save" method="post">
+
+            <input type="hidden" name="landmark_id" value="{{ repo.id }}">
+            <input type="hidden" name="urls" value="{{ request.url }}">
+
+            <button type="submit"
+                    class="btn {% if repo.id in saved_ids %}btn-saved{% else %}btn-save{% endif %}">
+                {% if repo.id in saved_ids %}
+                    💚 saved
+                {% else %}
+                    🤍 save
+                {% endif %}
+            </button>
+
+        </form>
+        {% endif %}
+
+    </div>
+
+</div>
+
 </body>
 </html>

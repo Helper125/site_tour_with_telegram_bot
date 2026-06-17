@@ -3,27 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>city {{ result.name }}</title>
+    <title>Edit City</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin/cities">Back</a>
-    <form method="post" action="/LandmarksInLands/admin/city/update/{{ result.name }}">
-        <label>name</label>
-        <input type="text" name="new_name" value="{{ result.name }}">
 
-        <label>land</label>
-        <select name="land">
-            {% for all in lands %}
-                <option value="{{ all.id }}" {% if all.id == result.land.id %} selected {% endif %}>
-                    {% if all.id == result.land.id %} select {% endif %}
-                    {{ all.name }}
-                </option>
-            {% endfor %}
-        </select>
+<div class="container">
 
-        <button type="submit">save</button>
-    </form>
+    <div class="top-bar">
 
-    <a href="/LandmarksInLands/admin/one_city/delete/{{ result.id }}">Delete city</a>
+        <h1>🏙 Edit City</h1>
+
+        <a
+            href="/LandmarksInLands/admin/cities"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form
+            method="post"
+            action="/LandmarksInLands/admin/city/update/{{ result.name }}"
+        >
+
+            <div class="search-row" style="flex-direction:column; align-items:flex-start;">
+
+                <label>City name</label>
+
+                <input
+                    type="text"
+                    name="new_name"
+                    value="{{ result.name }}"
+                    required
+                >
+
+                <label>Land</label>
+
+                <select name="land">
+
+                    {% for all in lands %}
+
+                        <option value="{{ all.id }}" {% if all.id == result.land.id %} selected {% endif %}>
+                            {% if all.id == result.land.id %} select {% endif %}
+                            {{ all.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="margin-top:15px;"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="card">
+
+        <a
+            href="/LandmarksInLands/admin/one_city/delete/{{ result.id }}"
+            class="btn btn-danger"
+        >
+            Delete City
+        </a>
+
+    </div>
+
+</div>
+
 </body>
 </html>

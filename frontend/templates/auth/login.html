@@ -2,55 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Login</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='static/css/login.css') }}">
 </head>
 <body>
-    <div>
-        <nav class="navbar navbar-dark bg-dark md-4">
-            <div class="container">
-                <span class="navbar-brand">Login</span>
-            </div>
-        </nav>
+
+<div class="login-container">
+
+    <div class="navbar">
+        Login
     </div>
+
     <form id="LoginForm">
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+
+        <label>Email address</label>
+        <input type="email" id="email" required>
+
+        <label>Password</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">Login</button>
+
+        <div class="auth-switch">
+            <a class="auth-link" href="/LandmarksInLands/register">Register</a>
+            <a class="auth-link" href="/LandmarksInLands/lands" style="background-color: rgb(22, 26, 91);">Back</a>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div id="error"></div>
+
     </form>
+</div>
 
+<script>
+document.getElementById('LoginForm').addEventListener("submit", async (e) => {
+    e.preventDefault()
 
-    <script>
-        document.getElementById('LoginForm').addEventListener("submit", async (e) => {
-            e.preventDefault()
-
-            const res = await fetch("/LandmarksInLands/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    email: document.getElementById("exampleInputEmail1").value,
-                    password: document.getElementById("exampleInputPassword1").value
-                })
-            })
-
-            if (res.ok) {
-                window.location.href = "/LandmarksInLands/lands"
-            }
-            else {
-                const err = await res.json()
-                document.getElementById("error").classList.remove("d-none")
-                document.getElementById("error").textContent = err.detail
-            }
+    const res = await fetch("/LandmarksInLands/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
         })
-    </script>
+    })
+
+    if (res.ok) {
+        window.location.href = "/LandmarksInLands/lands"
+    } else {
+        const err = await res.json()
+
+        const box = document.getElementById("error")
+        box.style.display = "block"
+        box.textContent = err.detail
+    }
+})
+</script>
+
 </body>
 </html>

@@ -3,60 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>all_cities</title>
+    <title>Cities</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}">
 </head>
 <body>
-    <a href="/LandmarksInLands/admin">Back</a>
-    <form method="get" action="/LandmarksInLands/admin/cities">
-        <label>Search</label>
-        <input type="search" name="search_query" placeholder="Please write name city">
 
-        <label>Id</label>
-        <input type="radio" name="sort_by" value="id" checked>
+<div class="container">
 
-        <label>Name</label>
-        <input type="radio" name="sort_by" value="name">
+    <div class="top-bar">
+        <h1>🏙 Cities</h1>
 
-        <button type="submit">sort</button>
-    </form>
-    <a href="/LandmarksInLands/admin/add_city">add city</a>
-    {% if cities %}
-        <form method="post" action="/LandmarksInLands/admin/city/delete">
-            <select name="action">
-                <option>-----</option>
-                <option value="delete_objects">Delete objects</option>
-            </select>
-            <button type="submit">Go</button>
-            <div class="container">
-                <div>
-                    <table>
-                        <tr>
-                            <th>action</th>
-                            <th>id</th>
-                            <th>name</th>
-                            <th>land</th>
-                        </tr>
-                        {% for item in cities %}
-                            <tr>
-                                <td><input type="checkbox" name="city_id" value="{{ item.id }}"></td>
-                                <td>({{ item.id }})</td>
-                                <td><a href="/LandmarksInLands/admin/city_more/{{ item.name }}">{{ item.name }}</a></td>
-                                <td><a href="/LandmarksInLands/admin/land_more/{{ item.land.name }}">{{ item.land.name }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+        <div>
+            <a href="/LandmarksInLands/admin" class="btn">
+                ← Back
+            </a>
+
+            <a href="/LandmarksInLands/admin/add_city" class="btn">
+                + Add City
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <form method="get" action="/LandmarksInLands/admin/cities">
+
+            <div class="search-row">
+
+                <input
+                    type="search"
+                    name="search_query"
+                    placeholder="Search city..."
+                >
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="id"
+                        checked
+                    >
+                    ID
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="sort_by"
+                        value="name"
+                    >
+                    Name
+                </label>
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    Search
+                </button>
+
             </div>
+
         </form>
+
+    </div>
+
+    {% if cities %}
+
+    <form method="post" action="/LandmarksInLands/admin/city/delete">
+
+        <div class="card">
+
+            <div class="actions">
+
+                <select name="action">
+
+                    <option value="">
+                        Choose action
+                    </option>
+
+                    <option value="delete_objects">
+                        Delete selected
+                    </option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Apply
+                </button>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Select</th>
+                        <th>ID</th>
+                        <th>City</th>
+                        <th>Land</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in cities %}
+
+                    <tr>
+
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="city_id"
+                                value="{{ item.id }}"
+                            >
+                        </td>
+
+                        <td>
+                            {{ item.id }}
+                        </td>
+
+                        <td>
+                            <a href="/LandmarksInLands/admin/city_more/{{ item.name }}">
+                                {{ item.name }}
+                            </a>
+                        </td>
+
+                        <td>
+                            <a href="/LandmarksInLands/admin/land_more/{{ item.land.name }}">
+                                {{ item.land.name }}
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </form>
+
+    <div class="pagination">
+
         {% if page > 1 %}
-            <a href="?page={{ page - 1 }}">Pervious</a>
+
+        <a
+            href="?page={{ page - 1 }}"
+            class="btn"
+        >
+            ← Previous
+        </a>
+
         {% endif %}
 
-        <h3>page {{ page }} of {{ pages }}</h3>
+        <span>
+            Page {{ page }} of {{ pages }}
+        </span>
 
         {% if page < pages %}
-            <a href="?page={{ page + 1 }}">Next</a>
+
+        <a
+            href="?page={{ page + 1 }}"
+            class="btn"
+        >
+            Next →
+        </a>
+
         {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="card">
+        <h3>No cities found.</h3>
+    </div>
+
     {% endif %}
+
+</div>
+
 </body>
 </html>

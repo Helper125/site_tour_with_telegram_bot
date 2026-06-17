@@ -3,62 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>landmarks</title>
+    <title>Landmarks</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='static/css/lands.css') }}">
 </head>
+
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">🌍 landmarks</span>
-            <a href="/LandmarksInLands/land/{{ land }}">Back</a>
-        </div>
-    </nav>
-    <form method="get" action="/LandmarksInLands/city/{{ alls.city }}">
-        <label>Search</label>
-        <input type="search" name="search_query">
+
+<!-- NAVBAR -->
+<nav>
+    <div class="navbar-brand">🌍 Landmarks</div>
+
+    <div>
+        <a href="/LandmarksInLands/land/{{ land }}">← Back</a>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <h2>Landmarks in {{ alls.city }}</h2>
+
+    <!-- SEARCH -->
+    <form class="search-form"
+          method="get"
+          action="/LandmarksInLands/city/{{ alls.city }}">
+
+        <input type="search" name="search_query" placeholder="Search landmark...">
         <button type="submit">Search</button>
+
     </form>
 
-    <div class="container">
-        <h2 class="mb-4">landmarkds in {{ alls.city }}</h2>
-        <div id="city" class="row g-3"></div>
-    </div>
+    <!-- GRID -->
+    <div class="row">
 
-    <div class="container">
-        <div class="row g-3">
-            {% for landmarks in alls.landmarks %}
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ landmarks.name }}</h5>
-                        <a href="/LandmarksInLands/landmark/{{ landmarks.name }}" class="btn btn-outline-dark btn-sm">more</a>
-                        <form action="/LandmarksInLands/add-landmark-save" method="post">
-                            <input type="hidden" name="landmark_id" value="{{ landmarks.id }}">
-                            <input type="hidden" name="urls" value="{{ request.url }}">
-                            <button type="submit">
-                                {% if landmarks.id in saved_ids %}
-                                    💚saved
-                                {% else %}
-                                    🤍save
-                                {% endif %}
-                            </button>
-                        </form>
-                    </div>
-                </div>
+        {% for landmarks in alls.landmarks %}
+
+        <div class="card">
+
+            <div class="card-title">
+                {{ landmarks.name }}
             </div>
-            {% endfor %}
+
+            <a class="btn btn-cities"
+               href="/LandmarksInLands/landmark/{{ landmarks.name }}">
+                More
+            </a>
+
+            {% if user %}
+            <form action="/LandmarksInLands/add-landmark-save" method="post">
+
+                <input type="hidden" name="landmark_id" value="{{ landmarks.id }}">
+                <input type="hidden" name="urls" value="{{ request.url }}">
+
+                <button type="submit"
+                        class="btn {% if landmarks.id in saved_ids %}btn-saved{% else %}btn-save{% endif %}">
+                    {% if landmarks.id in saved_ids %}
+                        💚 saved
+                    {% else %}
+                        🤍 save
+                    {% endif %}
+                </button>
+
+            </form>
+            {% endif %}
+
         </div>
+
+        {% endfor %}
+
     </div>
 
-    <h3>{% if page > 1 %}
-            <a href="?page={{ page - 1 }}">Pervious</a>
+    <!-- PAGINATION -->
+    <div class="pagination">
+
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">← Previous</a>
         {% endif %}
 
-        page {{ page }} of {{ pages }}
-        
+        <span>Page {{ page }} of {{ pages }}</span>
+
         {% if page < pages %}
-            <a href="?page={{ page + 1 }}">Next</a>
+            <a href="?page={{ page + 1 }}">Next →</a>
         {% endif %}
-    </h3>
+
+    </div>
+
+</div>
+
 </body>
 </html>

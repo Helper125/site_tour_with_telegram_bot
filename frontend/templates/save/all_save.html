@@ -3,44 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save</title>
+    <title>Saved Items</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='static/css/save.css') }}">
 </head>
 <body>
+
+<a href="/LandmarksInLands/lands" class="back-btn">
+    ← Back
+</a>
+
+<div class="container">
+
+    <h1>Saved Items</h1>
+
     {% if land %}
-        <h2>Lands:</h2>
-        {% for lands in land %}
-            <h3>{{ lands.land.name }}</h3>
-            <a href="/LandmarksInLands/land/{{ lands.land.name }}">More</a>
-            <form action="/LandmarksInLands/del-land-save" method="post">
-                <input type="hidden" name="land_id" value="{{ lands.land.id }}">
-                <input type="hidden" name="urls" value="{{ request.url }}">
-                <button type="submit">Del</button>
-            </form>
-        {% endfor %}
+        <div class="section">
+            <h2>Lands</h2>
+
+            {% for lands in land %}
+                <div class="card">
+                    <h3>{{ lands.land.name }}</h3>
+
+                    <div class="actions">
+                        <a class="btn-more"
+                           href="/LandmarksInLands/land/{{ lands.land.name }}">
+                            More
+                        </a>
+
+                        <form action="/LandmarksInLands/del-land-save" method="post">
+                            <input type="hidden" name="land_id" value="{{ lands.land.id }}">
+                            <input type="hidden" name="urls" value="{{ request.url }}">
+                            <button class="btn-delete" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
+
     {% if city %}
-        <h2>City:</h2>
-        {% for cities in city %}
-            <h3>{{ cities.city.name }}</h3>
-            <a href="/LandmarksInLands/city/{{ cities.city.name }}">More</a>
-            <form action="/LandmarksInLands/del-city-save" method="post">
-                <input type="hidden" name="city_id" value="{{ cities.city.id }}">
-                <input type="hidden" name="urls" value="{{ request.url }}">
-                <button type="submit">Del</button>
-            </form>
-        {% endfor %}
+        <div class="section">
+            <h2>Cities</h2>
+
+            {% for cities in city %}
+                <div class="card">
+                    <h3>{{ cities.city.name }}</h3>
+
+                    <div class="actions">
+                        <a class="btn-more"
+                           href="/LandmarksInLands/city/{{ cities.city.name }}">
+                            More
+                        </a>
+
+                        <form action="/LandmarksInLands/del-city-save" method="post">
+                            <input type="hidden" name="city_id" value="{{ cities.city.id }}">
+                            <input type="hidden" name="urls" value="{{ request.url }}">
+                            <button class="btn-delete" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
+
     {% if landmark %}
-        <h2>Landmarks:</h2>
-        {% for landmarks in landmark %}
-            <h3>{{ landmarks.landmark.name }}</h3>
-            <a href="/LandmarksInLands/landmark/{{ landmarks.landmark.name }}">More</a>
-            <form action="/LandmarksInLands/del-landmark-save" method="post">
-                <input type="hidden" name="landmark_id" value="{{ landmarks.landmark.id }}">
-                <input type="hidden" name="urls" value="{{ request.url }}">
-                <button type="submit">Del</button>
-            </form>
-        {% endfor %}
+        <div class="section">
+            <h2>Landmarks</h2>
+
+            {% for landmarks in landmark %}
+                <div class="card">
+                    <h3>{{ landmarks.landmark.name }}</h3>
+
+                    <div class="actions">
+                        <a class="btn-more"
+                           href="/LandmarksInLands/landmark/{{ landmarks.landmark.name }}">
+                            More
+                        </a>
+
+                        <form action="/LandmarksInLands/del-landmark-save" method="post">
+                            <input type="hidden" name="landmark_id" value="{{ landmarks.landmark.id }}">
+                            <input type="hidden" name="urls" value="{{ request.url }}">
+                            <button class="btn-delete" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
+
+</div>
+
 </body>
 </html>

@@ -3,27 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Landmark</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='static/css/admin.css') }}"
+    >
 </head>
 <body>
-    <a href="/LandmarksInLands/admin/landmarks">Back</a>
-    <form method="post" action="/LandmarksInLands/admin/add_landmarks">
-        <label>name</label>
-        <input type="text" name="name" placeholder="name" required>
 
-        <labe>address</labe>
-        <input type="text" name="address" placeholder="address" required>
+<div class="container">
 
-        <label>description</label>
-        <input type="text" name="description" placeholder="description" required>
+    <div class="top-bar">
 
-        <label>land</label>
-        <select name="city_id" required>
-            {% for city in repo %}
-                <option value="{{ city.id }}">{{ city.name }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">create</button>
-    </form>
+        <h1>📍 Add Landmark</h1>
+
+        <a
+            href="/LandmarksInLands/admin/landmarks"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form method="post" action="/LandmarksInLands/admin/add_landmarks">
+
+            <div class="search-row" style="flex-direction:column; align-items:flex-start;">
+
+                <label>Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter landmark name"
+                    required
+                >
+
+                <label>Address</label>
+                <input
+                    type="text"
+                    name="address"
+                    placeholder="Enter address"
+                    required
+                >
+
+                <label>Description</label>
+                <input
+                    type="text"
+                    name="description"
+                    placeholder="Enter description"
+                    required
+                >
+
+                <label>City</label>
+
+                <select name="city_id" required>
+
+                    {% for city in repo %}
+
+                    <option value="{{ city.id }}">
+                        {{ city.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="margin-top:15px;"
+                >
+                    Create Landmark
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 </body>
 </html>
