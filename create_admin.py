@@ -1,6 +1,7 @@
 import asyncio
 from src.db.database import async_session
 from src.auth.models import User
+from telegram_bot.auth.models import User_tg
 from src.auth.hashing import hash_password
 from getpass import getpass
 from email_validator import validate_email, EmailNotValidError
@@ -20,7 +21,7 @@ async def create_admin():
             return
         async with async_session() as session:
 
-            result = await session.execute(select(User).where(User.username == username | User.email == email))
+            result = await session.execute(select(User).where(User.username == username, User.email == email))
 
             existing_user = result.scalar_one_or_none()
 

@@ -72,7 +72,7 @@ async def user_delete(user_id: List[int], action: str, session: AsyncSession):
 
 async def edit_user_more(username: str, new_username: str = Form(None), email: str = Form(None), is_admin: str = Form(None), session: AsyncSession = Depends(get_db)):
     user = await session.scalar(select(User).where(User.username == username))
-
+    
     if username:
         user.username = new_username
     

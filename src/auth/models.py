@@ -11,3 +11,4 @@ class User(Base):
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     is_admin: Mapped[bool] = mapped_column(default=False)
+    tg_user: Mapped[list["User_tg"]] = relationship(back_populates="user", cascade="all, delete-orphan")

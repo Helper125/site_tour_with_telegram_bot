@@ -6,6 +6,7 @@ from src.routers.all_routers import routers
 from contextlib import asynccontextmanager
 from src.db.database import engine, Base
 from src.tour.models import *
+from telegram_bot.auth.models import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
