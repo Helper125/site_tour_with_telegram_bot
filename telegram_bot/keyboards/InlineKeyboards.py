@@ -1,18 +1,23 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-def lands(lands):
-    lands_keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=land.name,
-                    callback_data=f"land_{land.id}"
-                )
-            ]
-            for land in lands
-        ]
-    )
-    return lands_keyboard
+def lands(lands, page, max_pages):
+    keyboard = []
+
+    for land in lands:
+        keyboard.append(
+            [InlineKeyboardButton(text=land.name, callback_data=f"land_{land.id}")]
+        )
+
+    if page < max_pages:
+        keyboard.append(
+            [InlineKeyboardButton(text="->", callback_data=f"page_{(page + 1)}")]
+        )
+
+    if page >= 2:
+        keyboard.append(
+            [InlineKeyboardButton(text="<-", callback_data=f"page_{(page - 1)}")]
+        )
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
 def cities(cities):
@@ -45,6 +50,19 @@ def landmarks(landmarks, land_id):
         callback_data=f"land_{land_id}"
         )])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def back_landmark_to_landmarks():
+    InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="back",
+                    callback_data=f"back_landmark"
+                )
+            ]
+        ]
+    )
 
 
 def save_topic():
@@ -110,3 +128,33 @@ def saves_landmark_back():
         ]
     )
     return back
+
+
+def lands_for_AddCity(lands, page, max_page):
+    keyboard = []
+
+    for land in lands:
+        keyboard.append([InlineKeyboardButton(text=land.name, callback_data=f"AddCity_{land.id}")])
+
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+
+    if page >= 2:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+        
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def cities_for_AddLandmark(cities, page, max_page):
+    keyboard = []
+
+    for city in cities:
+        keyboard.append([InlineKeyboardButton(text=city.name, callback_data=f"AddLandmark_{city.id}")])
+
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+
+    if page >= 2:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)

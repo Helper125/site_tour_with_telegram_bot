@@ -23,25 +23,34 @@ async def start_bot(message: Message):
 
 @router.message(Command("all_users"))
 async def all_users(message: Message):
+    user_id = message.from_user.id
     async with async_session() as session:
-        all_user = await session.scalars(select(User))
-        answer_user = all_user.all()
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True, User.is_admin == True))
+        if user:
+            all_user = await session.scalars(select(User))
+            answer_user = all_user.all()
         
-
-        await message.answer("\n".join(f"ID: {user.id}, username: {user.username}, email: {user.email}, is_admin: {user.is_admin}" for user in answer_user))
+            await message.answer("\n".join(f"ID: {user.id}, username: {user.username}, email: {user.email}, is_admin: {user.is_admin}\n-----------------------------" for user in answer_user))
+        else:
+            pass
 
 
 @router.message(Command("all_tg_users"))
 async def all_users(message: Message):
+    user_id = message.from_user.id
     async with async_session() as session:
-        all_tg_user = await session.scalars(select(User_tg).options(selectinload(User_tg.user)))
-        answer_tg_user = all_tg_user.all()
-        if answer_tg_user != []:
-            await message.answer(
-                "\n".join(f"ID: {user_tg.id}, ID_tg: {user_tg.tg_id}, username: {user_tg.user.username}, login: {user_tg.login}, created_at: {user_tg.created_at}, is_admin: {user_tg.user.is_admin}" for user_tg in answer_tg_user)
-            )
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True, User.is_admin == True))
+        if user:
+            all_tg_user = await session.scalars(select(User_tg).options(selectinload(User_tg.user)))
+            answer_tg_user = all_tg_user.all()
+            if answer_tg_user != []:
+                await message.answer(
+                    "\n".join(f"ID: {user_tg.id}, ID_tg: {user_tg.tg_id}, username: {user_tg.user.username}, login: {user_tg.login}, created_at: {user_tg.created_at}, is_admin: {user_tg.user.is_admin}\n-----------------------------" for user_tg in answer_tg_user)
+                )
+            else:
+                await message.answer("Users are not register in telegram")
         else:
-            await message.answer("Users are not register in telegram")
+            pass
 
 
 @router.message(Command("register"))
@@ -155,6 +164,7 @@ async def get_password2_register(message: Message, state: FSMContext):
 
 @router.message(Command("login"))
 async def login(message: Message, state: FSMContext):
+    await state.clear()
     async with async_session() as session:
         check = await session.scalar(select(User_tg).where(User_tg.tg_id == message.from_user.id, User_tg.login == True))
         if check:
@@ -184,15 +194,20 @@ async def get_password(message: Message, state: FSMContext):
     data = await state.get_data()
 
     async with async_session() as session:
-        user = await session.scalar(select(User_tg).options(selectinload(User_tg.user)).where(User_tg.tg_id == data["tg_id"], User.email == data["email"]))
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == data["tg_id"], User.email == data["email"]))
         if user:
-            if not verify_password(data["password"], user.user.password):
+            verify = verify_password(data["password"], user.user.password)
+            if not verify:
                 await state.clear()
                 await message.answer("Incorrect email or password")
+                return
+
             if not user.login:
                 user.login = True
                 await session.commit()
+                await state.clear()
                 await message.answer("good")
+                return
         else:
             user_site = await session.scalar(select(User).where(User.email == data["email"]))
             if user_site:
@@ -200,6 +215,8 @@ async def get_password(message: Message, state: FSMContext):
                 session.add(stmt)
                 await session.commit()
                 await message.answer("good")
+                await state.clear()
+                return
             else:
                 await message.answer("You don`t have account. Please register new account through the command /register")
 
@@ -226,12 +243,15 @@ async def profil(message: Message):
     user_id = message.from_user.id
     async with async_session() as session:
         user = await session.scalar(select(User_tg).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True))
-        if len(user.user.email) >= 18:
-            user_email = user.user.email[3:14]
-        else:
-            user_email = user.user.email[1:5]
         if user:
-            if user.user.is_admin:
-                 await message.answer(f"Your profil admin:\nUsername: {user.user.username}\nEmail: ***{user_email}***\nCreated_at: {user.created_at}\nAdmin: {user.user.is_admin}")
-            else: 
-                await message.answer(f"Your profil:\nUsername: {user.user.username}\nEmail: ***{user_email}***\nCreated_at: {user.created_at}")
+            if len(user.user.email) >= 18:
+                user_email = user.user.email[3:14]
+            else:
+                user_email = user.user.email[1:5]
+            if user:
+                if user.user.is_admin:
+                    await message.answer(f"Your profil admin:\nUsername: {user.user.username}\nEmail: ***{user_email}***\nCreated_at: {user.created_at}\nAdmin: {user.user.is_admin}")
+                else: 
+                    await message.answer(f"Your profil:\nUsername: {user.user.username}\nEmail: ***{user_email}***\nCreated_at: {user.created_at}")
+        else:
+            await message.answer("To see your profil, you must first register")
