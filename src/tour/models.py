@@ -28,7 +28,7 @@ class City(Base):
 
     landmarks: Mapped[list["Landmarks"]] = relationship(back_populates="city", cascade="all, delete-orphan")
 
-    favorite = relationship("FavoriteCity", back_populates="city")
+    favorite = relationship("FavoriteCity", back_populates="city", cascade="all, delete-orphan")
 
 
 class Landmarks(Base): 
@@ -43,7 +43,7 @@ class Landmarks(Base):
 
     city: Mapped["City"] = relationship(back_populates="landmarks")
 
-    favorite = relationship("FavoriteLandmarks", back_populates="landmark")
+    favorite = relationship("FavoriteLandmarks", back_populates="landmark", cascade="all, delete-orphan")
 
 
 class FavoriteLands(Base):

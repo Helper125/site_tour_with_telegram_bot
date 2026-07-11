@@ -158,3 +158,54 @@ def cities_for_AddLandmark(cities, page, max_page):
         keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
 
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def dels_land(lands, page, max_page):
+    keyboard = []
+
+    for land in lands:
+        keyboard.append([InlineKeyboardButton(text=land.name, callback_data=f"DeleteLand_{land.id}")])
+    
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+
+    if page >= 2:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+
+    keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteLand_stop")])
+
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def dels_city(cities, page, max_page):
+    keyboard = []
+
+    for city in cities:
+        keyboard.append([InlineKeyboardButton(text=city.name, callback_data=f"DeleteCity_{city.id}")])
+
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+
+    if page >= 2:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+
+    keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteCity_stop")])
+
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def dels_landmark(landmarks, page, max_page):
+    keyboard = []
+
+    for landmark in landmarks:
+        keyboard.append([InlineKeyboardButton(text=landmark.name, callback_data=f"DeleteLandmark_{landmark.id}")])
+
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+
+    if page >= 2:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+
+    keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteLandmark_stop")])
+
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)

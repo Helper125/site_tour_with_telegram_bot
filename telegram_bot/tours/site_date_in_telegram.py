@@ -11,7 +11,7 @@ from ..auth.models import User_tg
 from src.auth.models import User
 from src.tour.models import Lands, City, Landmarks, FavoriteLands, FavoriteCity, FavoriteLandmarks
 
-from ..keyboards.InlineKeyboards import lands, cities, landmarks, back_landmark_to_landmarks, save_topic, saves_lands, saves_cities, saves_landmarks, saves_landmark_back, lands_for_AddCity, cities_for_AddLandmark
+from ..keyboards.InlineKeyboards import lands, cities, landmarks, back_landmark_to_landmarks, save_topic, saves_lands, saves_cities, saves_landmarks, saves_landmark_back, lands_for_AddCity, cities_for_AddLandmark, dels_land, dels_city, dels_landmark
 
 router = Router()
 
@@ -179,7 +179,6 @@ async def saves_back_to_topic(callback: CallbackQuery):
         await save(callback.message, user_id)
     elif callback.data.startswith("saves_back_to_landmarks"): 
         await save_landmarks(callback, user_id)
-
 
 
 @router.message(Command("add_land"))
@@ -350,6 +349,114 @@ async def add_city_id_landmark(callback: CallbackQuery, state: FSMContext):
     await state.clear()
 
 
+@router.message(Command("delete_land"))
+async def delete_land(message: Message):
+    user_id = message.from_user.id
+    async with async_session() as session:
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True, User.is_admin == True))
+        if not user:
+            return None
+        
+        page = 1
+        per_page = 5
+        
+        total = await session.scalar(select(func.count()).select_from(Lands))
+        max_page = (total - per_page - 1) // per_page
+        land = await session.scalars(select(Lands).offset((page - 1) * per_page).limit(per_page))
+        lands = land.all()
+
+        await message.answer("Choise land", reply_markup=dels_land(lands, page, max_page))
+
+@router.callback_query(F.data.startswith("DeleteLand_"))
+async def delete_land_id(callback: CallbackQuery):
+    land_id = callback.data.split("_")[1]
+    if land_id == "stop":
+        await callback.message.delete()
+        await callback.message.answer("All stopped")
+        return None
+    async with async_session() as session:
+        del_land = await session.scalar(select(Lands).where(Lands.id == int(land_id)))
+        if not del_land:
+            await callback.message.answer("error")
+            return None
+        
+        await session.delete(del_land)
+        await session.commit()
+        await callback.message.delete()
+        await callback.message.answer("This land is delete")
 
 
-# TODO
+@router.message(Command("delete_city"))
+async def delete_city(message: Message):
+    user_id = message.from_user.id
+    async with async_session() as session:
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True, User.is_admin == True))
+        if not user:
+            return
+        
+        page = 1
+        per_page = 5
+
+        total = await session.scalar(select(func.count()).select_from(City))
+        max_page = (total - per_page - 1) // per_page
+        city = await session.scalars(select(City).offset((page - 1) * per_page).limit(per_page))
+        cities = city.all()
+
+        await message.answer("Choise city:", reply_markup=dels_city(cities, page, max_page))
+    
+@router.callback_query(F.data.startswith("DeleteCity_"))
+async def delete_city_id(callback: CallbackQuery):
+    city_id = callback.data.split("_")[1]
+    if city_id == "stop":
+        await callback.message.delete()
+        await callback.message.answer("All stoped")
+        return
+    
+    async with async_session() as session:
+        del_city = await session.scalar(select(City).where(City.id == int(city_id)))
+        if not del_city:
+            await callback.message.answer("error")
+            return
+        
+        await session.delete(del_city)
+        await session.commit()
+        await callback.message.delete()
+        await callback.message.answer("This city is delete")
+
+
+@router.message(Command("delete_landmark"))
+async def delete_landmark(message: Message):
+    user_id = message.from_user.id
+    async with async_session() as session:
+        user = await session.scalar(select(User_tg).join(User_tg.user).options(selectinload(User_tg.user)).where(User_tg.tg_id == user_id, User_tg.login == True, User.is_admin == True))
+        if not user:
+            return
+        
+        page = 1
+        per_page = 5
+        
+        total = await session.scalar(select(func.count()).select_from(Landmarks))
+        max_page = (total - per_page - 1) // per_page
+        landmark = await session.scalars(select(Landmarks).offset((page - 1) * per_page).limit(per_page))
+        landmarks = landmark.all()
+
+        await message.answer("Choise landmark:", reply_markup=dels_landmark(landmarks, page, max_page))
+        
+@router.callback_query(F.data.startswith("DeleteLandmark_"))
+async def delete_landmark_id(callback: CallbackQuery):
+    landmark_id = callback.data.split("_")[1]
+    if landmark_id == "stop":
+        await callback.message.delete()
+        await callback.message.answer("All stoped")
+        return
+    
+    async with async_session() as session:
+        del_landmark = await session.scalar(select(Landmarks).where(Landmarks.id == int(landmark_id)))
+        if not del_landmark:
+            await callback.message.answer("error")
+            return
+        
+        await session.delete(del_landmark)
+        await session.commit()
+        await callback.message.delete()
+        await callback.message.answer("This landmark is delete")
