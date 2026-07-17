@@ -4,7 +4,6 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from .states import Register, Login
 from src.auth.hashing import hash_password, verify_password
-from sqlalchemy.ext.asyncio import AsyncSession
 from src.db.database import async_session
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload

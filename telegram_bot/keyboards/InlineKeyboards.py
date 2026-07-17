@@ -136,11 +136,11 @@ def lands_for_AddCity(lands, page, max_page):
     for land in lands:
         keyboard.append([InlineKeyboardButton(text=land.name, callback_data=f"AddCity_{land.id}")])
 
-    if page < max_page:
-        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+    if page > 1:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"PageLands_{page - 1}")])
 
-    if page >= 2:
-        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+    if page < max_page:
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"PageLands_{page + 1}")])
         
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
@@ -152,10 +152,10 @@ def cities_for_AddLandmark(cities, page, max_page):
         keyboard.append([InlineKeyboardButton(text=city.name, callback_data=f"AddLandmark_{city.id}")])
 
     if page < max_page:
-        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"PageCity_{page + 1}")])
 
-    if page >= 2:
-        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+    if page > 1:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"PageCity_{page - 1}")])
 
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
@@ -167,10 +167,10 @@ def dels_land(lands, page, max_page):
         keyboard.append([InlineKeyboardButton(text=land.name, callback_data=f"DeleteLand_{land.id}")])
     
     if page < max_page:
-        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"PageDeleteLand_{page + 1}")])
 
-    if page >= 2:
-        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+    if page > 1:
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"PageDeleteLand_{page - 1}")])
 
     keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteLand_stop")])
 
@@ -184,10 +184,10 @@ def dels_city(cities, page, max_page):
         keyboard.append([InlineKeyboardButton(text=city.name, callback_data=f"DeleteCity_{city.id}")])
 
     if page < max_page:
-        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"PageDeleteCity_{page + 1}")])
 
     if page >= 2:
-        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"PageDeleteCity_{page - 1}")])
 
     keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteCity_stop")])
 
@@ -201,10 +201,10 @@ def dels_landmark(landmarks, page, max_page):
         keyboard.append([InlineKeyboardButton(text=landmark.name, callback_data=f"DeleteLandmark_{landmark.id}")])
 
     if page < max_page:
-        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="->", callback_data=f"PageDeleteLandmark_{page + 1}")])
 
     if page >= 2:
-        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"page_{page}")])
+        keyboard.append([InlineKeyboardButton(text="<-", callback_data=f"PageDeleteLandmark_{page - 1}")])
 
     keyboard.append([InlineKeyboardButton(text="stop", callback_data="DeleteLandmark_stop")])
 
